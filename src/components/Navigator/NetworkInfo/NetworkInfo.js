@@ -1,22 +1,22 @@
 import { Button } from "@mui/material";
-import { useMetamaskContext } from "@/contexts/MetamaskContext";
 import { shortAddress } from "@/components/Utils/airportUtils";
 import { useStyles } from "./styles";
 import { Link, LinkOff } from "@mui/icons-material";
+
+import { useMetamaskContext } from "@/contexts/useMetamaskContext";
 
 const NetworkInfo = () => {
   const { classes } = useStyles();
   const {
     isMetamask,
-    chainId,
-    isValidChainId,
-    addressConnected,
-    connectWallet,
+    isAllowedChainId,
+    wallet: { address },
+    connectMetaMask,
   } = useMetamaskContext();
 
   return (
     <div className={classes.container}>
-      {isValidChainId ? (
+      {isAllowedChainId ? (
         <Link className={classes.success} />
       ) : (
         <>
@@ -25,10 +25,10 @@ const NetworkInfo = () => {
         </>
       )}
 
-      {isMetamask && addressConnected ? (
-        isValidChainId && <p>{shortAddress(addressConnected)}</p>
+      {isMetamask && address ? (
+        isAllowedChainId && <p>{shortAddress(address)}</p>
       ) : (
-        <Button variant="contained" onClick={connectWallet}>
+        <Button variant="contained" onClick={connectMetaMask}>
           Connect Wallet
         </Button>
       )}

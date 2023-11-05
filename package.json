@@ -12,6 +12,7 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@metamask/detect-provider": "^2.0.0",
     "@mui/icons-material": "^5.14.13",
     "@mui/material": "^5.14.16",
     "eslint": "8.49.0",
@@ -23,8 +24,8 @@
     "tss-react": "^4.9.3"
   },
   "devDependencies": {
-    "prettier": "3.0.3",
     "bufferutil": "^4.0.7",
+    "prettier": "3.0.3",
     "utf-8-validate": "^5.0.10"
   }
 }

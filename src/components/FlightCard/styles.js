@@ -84,12 +84,26 @@ const useStyles = makeStyles()((theme) => ({
       textAlign: "end",
     },
   },
-
   time: {
     display: "flex",
     justifyContent: "space-between",
     color: "#606c84",
     fontSize: 18,
+    "> p:nth-of-type(2)": {
+      fontSize: 16,
+    },
+  },
+  flightAlreadyTaken: {
+    marginTop: 6,
+    display: "flex",
+    color: "#8fce00",
+    gap: 4,
+  },
+  soldOut: {
+    marginTop: 6,
+    display: "flex",
+    color: "#FF4545",
+    gap: 4,
   },
 }));
 

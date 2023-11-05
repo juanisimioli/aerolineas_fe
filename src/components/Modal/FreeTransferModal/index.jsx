@@ -44,9 +44,17 @@ const FreeTransferModal = ({ modal, props }) => {
     await freeTransferReservation(reservationId, valueAddress);
   };
 
-  const handleReservationTransferredEvent = (reservationId) => {
-    setIsWaitingEvent(false);
-    setIsTransactionSuccess(true);
+  const handleReservationTransferredEvent = (
+    reservationIdEvent,
+    addressEvent
+  ) => {
+    if (
+      getAddress(addressEvent) === getAddress(wallet.address) ||
+      reservationIdEvent === reservationId
+    ) {
+      setIsWaitingEvent(false);
+      setIsTransactionSuccess(true);
+    }
   };
 
   const handleDoNothing = () => {

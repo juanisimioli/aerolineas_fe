@@ -35,6 +35,12 @@ const useStyles = makeStyles()((theme) => ({
     position: "fixed",
     top: -40,
   },
+  soldOut: {
+    marginBottom: 6,
+    display: "flex",
+    color: "#FF4545",
+    gap: 4,
+  },
 }));
 
 export { useStyles };

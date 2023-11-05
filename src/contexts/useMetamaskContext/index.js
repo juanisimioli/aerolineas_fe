@@ -1,8 +1,6 @@
 "use client";
 import { createContext, useContext } from "react";
 
-import PropTypes from "prop-types";
-
 import useMetamask from "@/hooks/useMetamask";
 
 const MetamaskContext = createContext(null);
@@ -10,25 +8,25 @@ MetamaskContext.displayName = "MetamaskContext";
 
 export const MetamaskContextProvider = ({ children }) => {
   const {
+    wallet,
     isMetamask,
-    isConnected,
-    addressConnected,
-    chainId,
-    isValidChainId,
-    connectWallet,
-    isLoadingMetamask,
-    signer,
+    error,
+    errorMessage,
+    isConnecting,
+    connectMetaMask,
+    isAllowedChainId,
+    clearError,
   } = useMetamask();
 
   const value = {
+    wallet,
     isMetamask,
-    isConnected,
-    addressConnected,
-    chainId,
-    isValidChainId,
-    connectWallet,
-    isLoadingMetamask,
-    signer,
+    error,
+    errorMessage,
+    isConnecting,
+    connectMetaMask,
+    isAllowedChainId,
+    clearError,
   };
 
   return (
@@ -47,8 +45,4 @@ export const useMetamaskContext = () => {
     );
 
   return context;
-};
-
-MetamaskContextProvider.propTypes = {
-  children: PropTypes.object.isRequired,
 };

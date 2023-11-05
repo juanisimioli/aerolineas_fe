@@ -2,7 +2,7 @@ import "./globals.css";
 import ThemeRegistry from "@/styles/ThemeRegistry";
 import { Inter } from "next/font/google";
 import { AerolineasContextProvider } from "@/contexts/AerolineasContext";
-import { MetamaskContextProvider } from "@/contexts/MetamaskContext";
+import { MetamaskContextProvider } from "@/contexts/useMetamaskContext";
 import Navigator from "@/components/Navigator/Navigator";
 import ToastProvider from "@/hooks/useToast";
 import Toast from "@/components/Toast/Toast";

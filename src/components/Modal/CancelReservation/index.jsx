@@ -13,12 +13,16 @@ import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
 import { useStyles } from "./styles";
+import { useToast } from "@/hooks/useToast";
+import { useMetamaskContext } from "@/contexts/useMetamaskContext";
 
 const CancelReservationModal = ({ modal, props }) => {
   const { classes } = useStyles();
   const { reservation } = props;
   const { reservationId, flightNumber, row, column } = reservation;
   const seatInfo = calculateSeat(row, column);
+
+  const { wallet } = useMetamaskContext();
 
   const { cancelReservation, contract, fees } = useAerolineasContext();
   const { feeCancellation } = fees;
@@ -27,18 +31,30 @@ const CancelReservationModal = ({ modal, props }) => {
   const [isWaitingEvent, setIsWaitingEvent] = useState(false);
   const [isTransactionSuccess, setIsTransactionSuccess] = useState(false);
 
+  const { handleOpenToast } = useToast();
+
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleCancelReservation = async () => {
-    setIsWaitingEvent(true);
-    await cancelReservation(reservationId);
+  const handleErrorCancelReservation = (error) => {
+    setIsWaitingEvent(false);
+    handleOpenToast("error", error?.shortMessage);
   };
 
-  const handleReservationCancelEvent = (reservationId) => {
-    setIsWaitingEvent(false);
-    setIsTransactionSuccess(true);
+  const handleCancelReservation = async () => {
+    setIsWaitingEvent(true);
+    await cancelReservation(reservationId, handleErrorCancelReservation);
+  };
+
+  const handleReservationCancelEvent = (reservationIdEvent, addressEvent) => {
+    if (
+      getAddress(addressEvent) === getAddress(wallet.address) ||
+      reservationIdEvent === reservationId
+    ) {
+      setIsWaitingEvent(false);
+      setIsTransactionSuccess(true);
+    }
   };
 
   const handleDoNothing = () => {

@@ -10,7 +10,6 @@ const useStyles = makeStyles()((theme) => ({
     padding: "0 1.5rem 0 0.5rem",
     transform: "rotate(180deg)",
     width: "100%",
-    height: "rem",
   },
 
   seatSelectedInfo: {
@@ -43,6 +42,10 @@ const useStyles = makeStyles()((theme) => ({
     fontWeight: 800,
     minWidth: 60,
     backgroundColor: "#ffd43c",
+  },
+  chipNoFunds: {
+    backgroundColor: "#D0342C",
+    color: "white",
   },
 }));
 

@@ -2,10 +2,8 @@
 import { useRouter } from "next/navigation";
 import FlightCard from "@/components/FlightCard/FlightCard";
 import { useAerolineasContext } from "@/contexts/AerolineasContext";
-import { useToast } from "@/hooks/useToast";
 import { useStyles } from "./styles";
 import { Skeleton } from "@mui/material";
-import useWeb3Provider from "@/hooks/useWeb3Provider";
 
 const Flights = () => {
   const { classes } = useStyles();
@@ -22,18 +20,7 @@ const Flights = () => {
     await onSelectFlight(flightId);
   };
 
-  const { state, connectWallet, disconnect } = useWeb3Provider();
-
-  console.log({ state });
-
-  const { handleOpenToast } = useToast();
-
   const noFlightsAvailable = !Boolean(flightsInfo?.length);
-
-  const handleTestClick = () => {
-    console.log(handleOpenToast);
-    handleOpenToast("success", "Flight Reserved");
-  };
 
   if (isLoadingFlights)
     return (
@@ -46,8 +33,6 @@ const Flights = () => {
 
   return (
     <div className={classes.container}>
-      <button onClick={connectWallet}>connect</button>
-      <button onClick={disconnect}>disconnect</button>
       {noFlightsAvailable ? (
         <p>No flights available</p>
       ) : (
@@ -60,8 +45,6 @@ const Flights = () => {
           />
         ))
       )}
-      {/* TODO: remove this button */}
-      <button onClick={handleTestClick}>click</button>
     </div>
   );
 };

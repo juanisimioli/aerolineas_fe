@@ -11,6 +11,11 @@ import OutboundSharpIcon from "@mui/icons-material/OutboundSharp";
 import { SeatStatus } from "../Utils/enums";
 import PositionedMenu from "./ActionMenu/ActionMenu";
 
+import {
+  AirplanemodeInactive,
+  AirlineSeatReclineExtra,
+} from "@mui/icons-material";
+
 const FlightCard = ({
   flight,
   onSelectFlight,
@@ -63,7 +68,6 @@ const FlightCard = ({
             />
             {departureInfo.date}
           </div>
-          <p>{`Flight # ${flightNumber} // SL ${seatsLeft}`}</p>
           <div>
             <OutboundSharpIcon
               sx={{
@@ -85,10 +89,21 @@ const FlightCard = ({
         </div>
         <div className={classes.time}>
           <p>{departureInfo.time}</p>
+          <p>{`Flight #${flightNumber}`}</p>
           <p>{arrivalInfo.time}</p>
         </div>
-        {!isReservation && alreadyTakenByAddress && "ALREADY TAKEN"}
-        {noMoreSeats && "SOLD OUT!"}
+        {!isReservation && alreadyTakenByAddress && (
+          <span className={classes.flightAlreadyTaken}>
+            <AirlineSeatReclineExtra />
+            Seat Already Taken
+          </span>
+        )}
+        {noMoreSeats && !alreadyTakenByAddress && (
+          <span className={classes.soldOut}>
+            <AirplanemodeInactive />
+            Sold Out
+          </span>
+        )}
       </div>
 
       {isReservation && (

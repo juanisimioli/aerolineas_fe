@@ -1,19 +1,22 @@
 "use client";
-
 import { ethers, getAddress } from "ethers";
 import { useEffect, useState } from "react";
-import useProvider from "./useProvider";
 import { AerolineasContractAddress } from "../../config.js";
 import Aerolineas from "../../../aerolineas_be/artifacts/contracts/Aerolineas.sol/Aerolineas.json";
-import useMetamask from "./useMetamask";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import { useToast } from "./useToast";
 
+import useProviderAndSigner from "./useProviderAndSigner.js";
+import { useMetamaskContext } from "@/contexts/useMetamaskContext/index.js";
+
 const useAerolineas = () => {
-  const { signer, provider } = useProvider();
-  const { addressConnected, chainId } = useMetamask();
+  const { signer } = useProviderAndSigner();
+  const {
+    wallet: { address, chainId },
+  } = useMetamaskContext();
+  const { handleOpenToast } = useToast();
+
   const [contract, setContract] = useState(null);
-  // const [contractProvider, setContractProvider] = useState(null);
   const [fees, setFees] = useState(null);
   const [flightsInfo, setFlightsInfo] = useState([]);
   const [currentFlight, setCurrentFlight] = useState(null);
@@ -26,19 +29,6 @@ const useAerolineas = () => {
   const [isLoadingFlights, setIsLoadingFlights] = useState(null);
   const [isLoadingSeats, setIsLoadingSeats] = useState(null);
   const [isLoadingReservations, setIsLoadingReservations] = useState(null);
-
-  const { handleOpenToast } = useToast();
-
-  ////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-  ///////// TODO: remove this from here and contract /////////
-  ////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-
-  const emitEvents = async () => {
-    const event = await contract.emitEvents();
-    event.wait();
-  };
 
   ////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////
@@ -65,7 +55,6 @@ const useAerolineas = () => {
 
   const getInfoForAvailableFlights = async () => {
     setIsLoadingFlights(true);
-    // await setTimeout(async () => {
     try {
       const availableFlights = await contract.getAvailableFlights();
       const flightsInfo = await Promise.all(
@@ -78,7 +67,6 @@ const useAerolineas = () => {
     } finally {
       setIsLoadingFlights(false);
     }
-    // }, 2000);
   };
 
   const getReservationInfoByAddress = async () => {
@@ -179,39 +167,28 @@ const useAerolineas = () => {
   ////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////
 
-  const reserveFlight = async (_flightId, _seatId, _price) => {
+  const reserveFlight = async (_flightId, _seatId, _price, onError) => {
     try {
       const flightReserved = await contract.reserveFlight(_flightId, _seatId, {
         value: _price,
       });
       flightReserved.wait();
     } catch (e) {
-      const error = contract.interface.parseError(e.data);
-      handleOpenToast("error", error.name);
-    } finally {
-      // console.log("getting reservations again");
-      // await getReservationIdsByAddress();
+      onError(e);
     }
   };
 
-  const cancelReservation = async (_reservationId) => {
-    console.log("CANCELLING RESERVATION", _reservationId);
+  const cancelReservation = async (_reservationId, onError) => {
     try {
       const reservationCanceled =
         await contract.cancelReservation(_reservationId);
       reservationCanceled.wait();
-      handleOpenToast("success", "Reservation Canceled");
     } catch (e) {
-      console.log(e);
+      onError(e);
     }
   };
 
   const freeTransferReservation = async (_reservationId, _addressReceiver) => {
-    console.log(
-      "Transferring Reservation to ",
-      _reservationId,
-      _addressReceiver
-    );
     try {
       const reservationTransferred = await contract.freeTransferReservation(
         _reservationId,
@@ -258,7 +235,6 @@ const useAerolineas = () => {
   /////////////////////  useEFFECTS  /////////////////////////
   ////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////
-
   useEffect(() => {
     if (!signer) return;
     const AerolineasContract = new ethers.Contract(
@@ -267,24 +243,14 @@ const useAerolineas = () => {
       signer
     );
     setContract(AerolineasContract);
-  }, [signer, addressConnected, chainId]);
-
-  // useEffect(() => {
-  //   if (!provider || contractProvider) return;
-  //   const AerolineasContract = new ethers.Contract(
-  //     AerolineasContractAddress,
-  //     Aerolineas.abi,
-  //     provider
-  //   );
-  //   setContractProvider(AerolineasContract);
-  // }, [provider]);
+  }, [signer, address, chainId]);
 
   useEffect(() => {
     if (!contract) return;
     getInfoForAvailableFlights();
     getReservationInfoByAddress();
     getFees();
-  }, [contract, addressConnected, chainId]);
+  }, [contract, address, chainId]);
 
   useEffect(() => {
     if (!contract) return;
@@ -322,7 +288,7 @@ const useAerolineas = () => {
     seatId,
     buyer
   ) => {
-    if (getAddress(buyer) !== getAddress(addressConnected)) return;
+    if (getAddress(buyer) !== getAddress(address)) return;
 
     getInfoForAvailableFlights();
     handleOpenToast(
@@ -331,8 +297,10 @@ const useAerolineas = () => {
     );
   };
 
-  const handleReservationCancelEvent = (reservationId) => {
+  const handleReservationCancelEvent = (reservationId, addressEvent) => {
+    if (getAddress(addressEvent) !== getAddress(address)) return;
     getInfoForAvailableFlights();
+    handleOpenToast("success", "Reservation Cancelled");
   };
 
   const handleReservationTransferredEvent = (
@@ -340,7 +308,12 @@ const useAerolineas = () => {
     _oldOwner,
     _newOwner
   ) => {
-    getInfoForAvailableFlights();
+    if (getAddress(_oldOwner) === getAddress(address)) {
+      getInfoForAvailableFlights();
+      handleOpenToast("success", "Reservation transferred");
+    } else if (getAddress(_newOwner) === getAddress(address)) {
+      handleOpenToast("success", "You receive a reservation");
+    }
   };
 
   const handleReservationOnResaleEvent = (_reservationId, _resalePrice) => {
@@ -383,7 +356,6 @@ const useAerolineas = () => {
     resaleReservation,
     cancelResaleReservation,
     contract,
-    emitEvents,
     seatSelected,
     onSelectSeat,
     isLoadingFlights,

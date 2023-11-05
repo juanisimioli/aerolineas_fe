@@ -6,6 +6,8 @@ import { Button, Chip, CircularProgress } from "@mui/material";
 import { useStyles } from "./styles";
 import { Flight } from "@mui/icons-material";
 import { Fab, Tooltip } from "@mui/material";
+import { useToast } from "@/hooks/useToast";
+import { useMetamaskContext } from "@/contexts/useMetamaskContext";
 
 const SeatSelection = () => {
   const { classes } = useStyles();
@@ -18,12 +20,33 @@ const SeatSelection = () => {
     contract,
   } = useAerolineasContext();
 
+  const {
+    wallet: { balance },
+  } = useMetamaskContext();
+
+  const { handleOpenToast } = useToast();
+
   const seat = calculateSeat(seatSelected?.row, seatSelected?.column);
+
+  const etherPriceSelectedSeat =
+    seatSelected?.price && ethers.formatUnits(seatSelected?.price, "ether");
+
+  const noSufficientFunds = Number(etherPriceSelectedSeat) > Number(balance);
+
+  const handleErrorReserveFlight = (error) => {
+    handleOpenToast("error", error?.shortMessage);
+    setIsWaitingEvent(false);
+  };
 
   const handleReserveFlight = (e) => {
     e.stopPropagation();
     setIsWaitingEvent(true);
-    reserveFlight(currentFlight.id, seatSelected.id, seatSelected.price);
+    reserveFlight(
+      currentFlight.id,
+      seatSelected.id,
+      seatSelected.price,
+      handleErrorReserveFlight
+    );
   };
 
   const handleReservationMadeEvent = () => {
@@ -61,8 +84,14 @@ const SeatSelection = () => {
           <Chip className={classes.chipSeat} label={seat} />
           {isWaitingEvent ? (
             <CircularProgress />
+          ) : noSufficientFunds ? (
+            <Chip className={classes.chipNoFunds} label="No Funds" />
           ) : (
-            <Button variant="contained" onClick={handleReserveFlight}>
+            <Button
+              disabled={noSufficientFunds}
+              variant="contained"
+              onClick={handleReserveFlight}
+            >
               Reserve
             </Button>
           )}

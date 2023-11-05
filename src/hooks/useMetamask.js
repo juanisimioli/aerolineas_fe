@@ -1,90 +1,127 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import detectEthereumProvider from "@metamask/detect-provider";
+import { ethers } from "ethers";
 
-const networkIds = {
-  local: 1337,
+const allowedNetworkIds = {
   goerli: 5,
+  local: 1337,
 };
 
+const disconnectedState = {
+  address: "",
+  balance: "",
+  chainId: "",
+};
+
+const checkIsAllowedChainId = (chainId) => {
+  return Object.values(allowedNetworkIds).includes(chainId);
+};
+
+const formatBalance = (balance) => ethers.formatUnits(balance, "ether");
+
 const useMetamask = () => {
-  const [isMetamask, setIsMetamask] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [addressConnected, setAddressConnected] = useState("");
-  const [chainId, setChainId] = useState(null);
-  const [isLoadingMetamask, setIsLoadingMetamask] = useState(true);
-  const isValidChainId = Object.values(networkIds).includes(chainId);
+  const [hasProvider, setHasProvider] = useState(null);
+  const [isConnecting, setIsConnecting] = useState(true);
+  const [isAllowedChainId, setIsAllowedChainId] = useState(false);
+  const [wallet, setWallet] = useState(disconnectedState);
 
-  const checkConnection = async () => {
-    const { ethereum } = window;
+  const [errorMessage, setErrorMessage] = useState("");
+  const clearError = () => setErrorMessage("");
 
-    if (ethereum) {
-      setIsMetamask(true);
-      const accounts = await ethereum.request({ method: "eth_accounts" });
-      const chainId = await ethereum.request({ method: "eth_chainId" });
-      setChainId(parseInt(chainId));
-      if (accounts.length > 0) {
-        setIsConnected(true);
-        setAddressConnected(accounts[0]);
-      } else {
-        setIsConnected(false);
-        setAddressConnected(null);
-      }
-    } else {
-      setIsMetamask(false);
+  // useCallback ensures that you don't uselessly recreate the _updateWallet function on every render
+  const _updateWallet = useCallback(async (providedAccounts) => {
+    setIsConnecting(true);
+
+    const accounts =
+      providedAccounts ||
+      (await window.ethereum.request({ method: "eth_accounts" }));
+
+    if (accounts.length === 0) {
+      // If there are no accounts, then the user is disconnected
+      setWallet(disconnectedState);
+      setIsConnecting(false);
+      return;
     }
-    setIsLoadingMetamask(false);
-  };
 
-  useEffect(() => {
-    checkConnection();
+    const balance = formatBalance(
+      await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [accounts[0], "latest"],
+      })
+    );
+
+    const chainIdHex = await window.ethereum.request({
+      method: "eth_chainId",
+    });
+
+    const chainId = parseInt(chainIdHex);
+
+    setIsAllowedChainId(checkIsAllowedChainId(chainId));
+    setWallet({ address: accounts[0], balance, chainId });
+    setIsConnecting(false);
   }, []);
 
-  const getAccount = async () => {
-    setIsLoadingMetamask(true);
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-    setAddressConnected(accounts[0]);
-    setIsLoadingMetamask(false);
-  };
+  const updateWalletAndAccounts = useCallback(
+    () => _updateWallet(),
+    [_updateWallet]
+  );
 
-  const connectWallet = async () => {
-    setIsLoadingMetamask(true);
-    try {
-      if (!ethereum || !isValidChainId) return;
+  const updateWallet = useCallback(
+    (accounts) => _updateWallet(accounts),
+    [_updateWallet]
+  );
 
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      setUserLoggedIn(true);
-      setCurrentAccount(accounts[0]);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setIsLoadingMetamask(false);
-    }
-  };
-
+  /**
+   * This logic checks if MetaMask is installed. If it is, some event handlers are set up
+   * to update the wallet state when MetaMask changes. The function returned by useEffect
+   * is used as a "cleanup": it removes the event handlers whenever the MetaMaskProvider
+   * is unmounted.
+   */
   useEffect(() => {
-    if (!isMetamask) return;
+    const getProvider = async () => {
+      const provider = await detectEthereumProvider({ silent: true });
+      setHasProvider(Boolean(provider));
 
-    ethereum.on("accountsChanged", getAccount);
-    ethereum.on("chainChanged", (_chainId) => window.location.reload());
+      if (provider) {
+        updateWalletAndAccounts();
+        window.ethereum.on("accountsChanged", updateWallet);
+        window.ethereum.on("chainChanged", updateWalletAndAccounts);
+      }
+    };
+
+    getProvider();
 
     return () => {
-      ethereum.removeListener("accountsChanged", getAccount);
-      ethereum.removeListener("chainChanged", (_chainId) =>
-        window.location.reload()
-      );
+      window.ethereum?.removeListener("accountsChanged", updateWallet);
+      window.ethereum?.removeListener("chainChanged", updateWalletAndAccounts);
     };
-  }, [isMetamask]);
+  }, [updateWallet, updateWalletAndAccounts]);
+
+  const connectMetaMask = async () => {
+    setIsConnecting(true);
+
+    try {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      clearError();
+      updateWallet(accounts);
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+    setIsConnecting(false);
+  };
 
   return {
-    isMetamask,
-    isConnected,
-    addressConnected,
-    chainId,
-    isValidChainId,
-    connectWallet,
-    isLoadingMetamask,
+    clearError,
+    connectMetaMask,
+    error: !!errorMessage,
+    errorMessage,
+    isAllowedChainId,
+    isConnecting,
+    isMetamask: hasProvider,
+    wallet,
   };
 };
 
