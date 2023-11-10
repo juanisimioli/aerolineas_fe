@@ -14,19 +14,21 @@ import { Info, ExpandMore } from "@mui/icons-material";
 import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
+import { useToast } from "@/hooks/useToast";
 import { useStyles } from "./styles";
 
 const ResaleModal = ({ modal, props }) => {
-  const { classes } = useStyles();
   const { reservation } = props;
   const { reservationId, flightNumber, row, column, price } = reservation;
   const seatInfo = calculateSeat(row, column);
 
+  const { classes } = useStyles();
+  const { handleOpenToast } = useToast();
   const { resaleReservation, contract, fees } = useAerolineasContext();
   const { feeResale } = fees;
 
-  const [expanded, setExpanded] = useState(false);
-  const [isWaitingEvent, setIsWaitingEvent] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isWaitingSuccessEvent, setIsWaitingSuccessEvent] = useState(false);
   const [isTransactionSuccess, setIsTransactionSuccess] = useState(false);
   const [isValidValue, setIsValidValue] = useState(true);
   const [valueResale, setValueResale] = useState(
@@ -34,7 +36,15 @@ const ResaleModal = ({ modal, props }) => {
   );
 
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setIsAccordionExpanded(isExpanded ? panel : false);
+  };
+
+  const handleErrorResaleReservation = (error) => {
+    setIsWaitingSuccessEvent(false);
+    handleOpenToast(
+      "error",
+      error?.shortMessage || "Error processing transaction"
+    );
   };
 
   const handleValueResale = (e) => {
@@ -51,14 +61,27 @@ const ResaleModal = ({ modal, props }) => {
   };
 
   const handleResaleReservation = async () => {
-    setIsWaitingEvent(true);
+    setIsWaitingSuccessEvent(true);
     const priceInWei = ethers.parseEther(valueResale);
-    await resaleReservation(reservationId, priceInWei);
+    await resaleReservation(
+      reservationId,
+      priceInWei,
+      handleErrorResaleReservation
+    );
   };
 
-  const handleReservationOnResaleEvent = () => {
-    setIsWaitingEvent(false);
-    setIsTransactionSuccess(true);
+  const handleReservationOnResaleEvent = (
+    reservationIdEvent,
+    _resalePrice,
+    _addressEvent
+  ) => {
+    if (
+      getAddress(_addressEvent) === getAddress(wallet.address) ||
+      reservationIdEvent === reservationId
+    ) {
+      setIsWaitingSuccessEvent(false);
+      setIsTransactionSuccess(true);
+    }
   };
 
   const handleDoNothing = () => {
@@ -99,7 +122,7 @@ const ResaleModal = ({ modal, props }) => {
         label="Resale Price"
         value={valueResale}
         error={!isValidValue}
-        disabled={isWaitingEvent || isTransactionSuccess}
+        disabled={isWaitingSuccessEvent || isTransactionSuccess}
         type="number"
         fullWidth
         inputProps={{
@@ -114,7 +137,7 @@ const ResaleModal = ({ modal, props }) => {
       />
 
       <Accordion
-        expanded={expanded === "panel1"}
+        expanded={isAccordionExpanded === "panel1"}
         onChange={handleChangeAccordion("panel1")}
         className={classes.accordionMoreInfo}
       >
@@ -145,7 +168,7 @@ const ResaleModal = ({ modal, props }) => {
 
   const ModalAction = (
     <div className={classes.actionContainer}>
-      {isWaitingEvent ? (
+      {isWaitingSuccessEvent ? (
         <CircularProgress />
       ) : isTransactionSuccess ? (
         <>

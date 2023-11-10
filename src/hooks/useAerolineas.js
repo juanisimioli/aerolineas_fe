@@ -71,59 +71,63 @@ const useAerolineas = () => {
 
   const getReservationInfoByAddress = async () => {
     setIsLoadingReservations(true);
-    const reservationsIds = await contract.getReservationIdsByAddress();
+    try {
+      const reservationsIds = await contract.getReservationIdsByAddress();
 
-    const reservationInfoByAddress = await Promise.all(
-      reservationsIds.map((reservationId) => {
-        try {
-          return contract.getReservationInfoById(reservationId);
-        } catch (e) {
-          console.log(e);
-        }
-      })
-    );
+      const reservationInfoByAddress = await Promise.all(
+        reservationsIds.map((reservationId) => {
+          try {
+            return contract.getReservationInfoById(reservationId);
+          } catch (e) {
+            console.log(e);
+          }
+        })
+      );
 
-    const reservationAndFlightInfo = await Promise.all(
-      reservationInfoByAddress.map(async (reservation) => {
-        let flightInfo;
-        flightInfo = flightsInfo.find((fli) => fli.id === reservation.flight);
+      const reservationAndFlightInfo = await Promise.all(
+        reservationInfoByAddress.map(async (reservation) => {
+          let flightInfo;
+          flightInfo = flightsInfo.find((fli) => fli.id === reservation.flight);
 
-        // If flight is not available, get flight information
-        if (!Boolean(flightInfo)) {
-          flightInfo = await contract.getFlight(reservation.flight);
-        }
+          // If flight is not available, get flight information
+          if (!Boolean(flightInfo)) {
+            flightInfo = await contract.getFlight(reservation.flight);
+          }
 
-        const {
-          reservation: reservationId,
-          timestamp,
-          price,
-          column,
-          row,
-          seatStatus,
-        } = reservation;
-        const { flightNumber, from, to, departure, arrival, id, seatsLeft } =
-          flightInfo;
+          const {
+            reservation: reservationId,
+            timestamp,
+            price,
+            column,
+            row,
+            seatStatus,
+          } = reservation;
+          const { flightNumber, from, to, departure, arrival, id, seatsLeft } =
+            flightInfo;
 
-        return {
-          reservationId,
-          flightNumber,
-          from,
-          to,
-          departure,
-          arrival,
-          id,
-          timestamp,
-          price,
-          column,
-          row,
-          seatStatus,
-          seatsLeft,
-        };
-      })
-    );
+          return {
+            reservationId,
+            flightNumber,
+            from,
+            to,
+            departure,
+            arrival,
+            id,
+            timestamp,
+            price,
+            column,
+            row,
+            seatStatus,
+            seatsLeft,
+          };
+        })
+      );
 
-    setReservationsInfoByAddress(reservationAndFlightInfo);
-    setIsLoadingReservations(false);
+      setReservationsInfoByAddress(reservationAndFlightInfo);
+      setIsLoadingReservations(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   ////////////////////////////////////////////////////////////
@@ -199,38 +203,34 @@ const useAerolineas = () => {
         _addressReceiver
       );
       reservationTransferred.wait();
-      handleOpenToast("success", "Reservation transferred");
     } catch (e) {
       onError(e);
     }
   };
 
-  const resaleReservation = async (_reservationId, _priceForResale) => {
-    console.log(
-      "Resale reservation with new price ",
-      _reservationId,
-      _priceForResale
-    );
+  const resaleReservation = async (
+    _reservationId,
+    _priceForResale,
+    onError
+  ) => {
     try {
       const resalePublished = await contract.resaleReservation(
         _reservationId,
         _priceForResale
       );
       resalePublished.wait();
-      handleOpenToast("success", "Reservation published for resale");
     } catch (e) {
-      console.log(e);
+      onError(e);
     }
   };
 
-  const cancelResaleReservation = async (_reservationId) => {
+  const cancelResaleReservation = async (_reservationId, onError) => {
     try {
       const cancelResaleReservation =
         await contract.undoResaleReservation(_reservationId);
       cancelResaleReservation.wait();
-      handleOpenToast("success", "Resale canceled");
     } catch (e) {
-      console.log(e);
+      onError(e);
     }
   };
 
@@ -240,7 +240,8 @@ const useAerolineas = () => {
   ////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////
   useEffect(() => {
-    if (!signer) return;
+    if (!signer || !address) return;
+
     const AerolineasContract = new ethers.Contract(
       aerolineasContractAddress[chainId],
       Aerolineas.abi,
@@ -293,18 +294,14 @@ const useAerolineas = () => {
     buyer
   ) => {
     if (getAddress(buyer) !== getAddress(address)) return;
-
+    handleOpenToast("success", `Flight Reserved`);
     getInfoForAvailableFlights();
-    handleOpenToast(
-      "success",
-      `Flight Reserved. Flight Id: ${flightId} - Seat Id: ${seatId}`
-    );
   };
 
   const handleReservationCancelEvent = (reservationId, addressEvent) => {
     if (getAddress(addressEvent) !== getAddress(address)) return;
-    getInfoForAvailableFlights();
     handleOpenToast("success", "Reservation Cancelled");
+    getInfoForAvailableFlights();
   };
 
   const handleReservationTransferredEvent = (
@@ -313,22 +310,28 @@ const useAerolineas = () => {
     _newOwner
   ) => {
     if (getAddress(_oldOwner) === getAddress(address)) {
-      getInfoForAvailableFlights();
       handleOpenToast("success", "Reservation transferred");
+      getInfoForAvailableFlights();
     } else if (getAddress(_newOwner) === getAddress(address)) {
       handleOpenToast("success", "You receive a reservation");
     }
   };
 
-  const handleReservationOnResaleEvent = (_reservationId, _resalePrice) => {
-    getInfoForAvailableFlights();
+  const handleReservationOnResaleEvent = (
+    _reservationId,
+    _resalePrice,
+    _passenger
+  ) => {
+    if (getAddress(_passenger) === getAddress(address)) {
+      handleOpenToast("success", "Reservation published for resale");
+      getInfoForAvailableFlights();
+    }
   };
-  const handleUndoReservationOnResaleEvent = (_reservationId) => {
-    getInfoForAvailableFlights();
-  };
-
-  const xxx = (a, b, c, d, e, f) => {
-    console.log("me", a, b, c, d, e, f);
+  const handleUndoReservationOnResaleEvent = (_reservationId, _passenger) => {
+    if (getAddress(_passenger) === getAddress(address)) {
+      handleOpenToast("success", "Resale canceled");
+      getInfoForAvailableFlights();
+    }
   };
 
   // when contract is ready, subscribe to blockchain events
@@ -340,8 +343,6 @@ const useAerolineas = () => {
     contract.on("ReservationOnResale", handleReservationOnResaleEvent);
     contract.on("UndoReservationOnResale", handleUndoReservationOnResaleEvent);
 
-    contract.on("Transfer", xxx);
-
     return () => {
       contract.off("ReservationMade", handleReservationMadeEvent);
       contract.off("ReservationCanceled", handleReservationCancelEvent);
@@ -351,12 +352,11 @@ const useAerolineas = () => {
         "UndoReservationOnResale",
         handleUndoReservationOnResaleEvent
       );
-      contract.off("Transfer", xxx);
     };
   }, [contract]);
 
   return {
-    flightsInfo, // rename to availableFlightsInfo
+    flightsInfo,
     onSelectFlight,
     currentFlight,
     currentSeats,

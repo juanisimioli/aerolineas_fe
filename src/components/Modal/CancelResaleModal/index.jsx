@@ -11,32 +11,53 @@ import { Info, ExpandMore } from "@mui/icons-material";
 import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
+import { useToast } from "@/hooks/useToast";
 import { useStyles } from "./styles";
 
 const CancelResaleModal = ({ modal, props }) => {
-  const { classes } = useStyles();
   const { reservation } = props;
   const { reservationId, flightNumber, row, column } = reservation;
   const seatInfo = calculateSeat(row, column);
 
+  const { classes } = useStyles();
+  const { handleOpenToast } = useToast();
   const { cancelResaleReservation, contract } = useAerolineasContext();
 
-  const [expanded, setExpanded] = useState(false);
-  const [isWaitingEvent, setIsWaitingEvent] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isWaitingSuccessEvent, setIsWaitingSuccessEvent] = useState(false);
   const [isTransactionSuccess, setIsTransactionSuccess] = useState(false);
 
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setIsAccordionExpanded(isExpanded ? panel : false);
+  };
+
+  const handleErrorCancelResaleReservation = (error) => {
+    setIsWaitingSuccessEvent(false);
+    handleOpenToast(
+      "error",
+      error?.info?.error?.data?.data?.message || "Error processing transaction"
+    );
   };
 
   const handleCancelResaleReservation = async () => {
-    setIsWaitingEvent(true);
-    await cancelResaleReservation(reservationId);
+    setIsWaitingSuccessEvent(true);
+    await cancelResaleReservation(
+      reservationId,
+      handleErrorCancelResaleReservation
+    );
   };
 
-  const handleUndoReservationOnResaleEvent = () => {
-    setIsWaitingEvent(false);
-    setIsTransactionSuccess(true);
+  const handleUndoReservationOnResaleEvent = (
+    reservationIdEvent,
+    addressEvent
+  ) => {
+    if (
+      getAddress(addressEvent) === getAddress(wallet.address) ||
+      reservationIdEvent === reservationId
+    ) {
+      setIsWaitingSuccessEvent(false);
+      setIsTransactionSuccess(true);
+    }
   };
 
   const handleDoNothing = () => {
@@ -73,7 +94,7 @@ const CancelResaleModal = ({ modal, props }) => {
       </div>
 
       <Accordion
-        expanded={expanded === "panel1"}
+        expanded={isAccordionExpanded === "panel1"}
         onChange={handleChangeAccordion("panel1")}
         className={classes.accordionMoreInfo}
       >
@@ -102,7 +123,7 @@ const CancelResaleModal = ({ modal, props }) => {
 
   const ModalAction = (
     <div className={classes.actionContainer}>
-      {isWaitingEvent ? (
+      {isWaitingSuccessEvent ? (
         <CircularProgress />
       ) : isTransactionSuccess ? (
         <>
@@ -127,7 +148,7 @@ const CancelResaleModal = ({ modal, props }) => {
   );
 
   return (
-    <CustomModal {...modal} modalProps={{ fullWidth: true, isWaitingEvent }}>
+    <CustomModal {...modal} modalProps={{ fullWidth: true }}>
       <CustomModal.Content>{ModalContent}</CustomModal.Content>
       <CustomModal.Actions>{ModalAction}</CustomModal.Actions>
     </CustomModal>

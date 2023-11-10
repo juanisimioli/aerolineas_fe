@@ -17,28 +17,27 @@ import { useToast } from "@/hooks/useToast";
 import { useStyles } from "./styles";
 
 const FreeTransferModal = ({ modal, props }) => {
-  const { classes } = useStyles();
   const { reservation } = props;
   const { reservationId, flightNumber, row, column } = reservation;
   const seatInfo = calculateSeat(row, column);
 
+  const { classes } = useStyles();
+  const { handleOpenToast } = useToast();
   const { freeTransferReservation, contract } = useAerolineasContext();
 
-  const { handleOpenToast } = useToast();
-
-  const [expanded, setExpanded] = useState(false);
-  const [isWaitingEvent, setIsWaitingEvent] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isWaitingSuccessEvent, setIsWaitingSuccessEvent] = useState(false);
   const [isTransactionSuccess, setIsTransactionSuccess] = useState(false);
   const [isValidAddress, setIsValidAddress] = useState(null);
+  const [isInputTouched, setIsInputTouched] = useState(false);
   const [valueAddress, setValueAddress] = useState("");
 
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setIsAccordionExpanded(isExpanded ? panel : false);
   };
 
   const handleErrorFreeTransferReservation = (error) => {
-    setIsWaitingEvent(false);
-    console.log({ error });
+    setIsWaitingSuccessEvent(false);
     handleOpenToast(
       "error",
       error?.info?.error?.data?.data?.message || "Error processing transaction"
@@ -47,12 +46,13 @@ const FreeTransferModal = ({ modal, props }) => {
 
   const handleValueAddress = ({ target }) => {
     const { value } = target;
+    !isInputTouched && setIsInputTouched(true);
     setValueAddress(value);
     setIsValidAddress(isAddress(value));
   };
 
   const handleFreeTransfer = async () => {
-    setIsWaitingEvent(true);
+    setIsWaitingSuccessEvent(true);
     await freeTransferReservation(
       reservationId,
       valueAddress,
@@ -68,7 +68,7 @@ const FreeTransferModal = ({ modal, props }) => {
       getAddress(addressEvent) === getAddress(wallet.address) ||
       reservationIdEvent === reservationId
     ) {
-      setIsWaitingEvent(false);
+      setIsWaitingSuccessEvent(false);
       setIsTransactionSuccess(true);
     }
   };
@@ -81,6 +81,7 @@ const FreeTransferModal = ({ modal, props }) => {
     if (!modal.isModalOpen) {
       setIsTransactionSuccess(false);
       setValueAddress("");
+      setIsInputTouched(false);
     }
   }, [modal]);
 
@@ -102,19 +103,18 @@ const FreeTransferModal = ({ modal, props }) => {
         <Typography
           className={classes.mainInfo}
         >{`Seat ${seatInfo}`}</Typography>
-        <Typography className={classes.mainInfo}>{`Fee: ${2}%`}</Typography>
       </div>
 
       <TextField
         label="Destination Address"
         value={valueAddress}
-        error={!isValidAddress}
+        error={!isValidAddress && isInputTouched}
         onChange={handleValueAddress}
         className={classes.inputAddress}
       />
 
       <Accordion
-        expanded={expanded === "panel1"}
+        expanded={isAccordionExpanded === "panel1"}
         onChange={handleChangeAccordion("panel1")}
         className={classes.accordionMoreInfo}
       >
@@ -145,7 +145,7 @@ const FreeTransferModal = ({ modal, props }) => {
 
   const ModalAction = (
     <div className={classes.actionContainer}>
-      {isWaitingEvent ? (
+      {isWaitingSuccessEvent ? (
         <CircularProgress />
       ) : isTransactionSuccess ? (
         <>

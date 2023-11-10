@@ -12,38 +12,36 @@ import { Info, ExpandMore } from "@mui/icons-material";
 import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
-import { useStyles } from "./styles";
 import { useToast } from "@/hooks/useToast";
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";
+import { useStyles } from "./styles";
 
 const CancelReservationModal = ({ modal, props }) => {
-  const { classes } = useStyles();
   const { reservation } = props;
   const { reservationId, flightNumber, row, column } = reservation;
   const seatInfo = calculateSeat(row, column);
 
+  const { classes } = useStyles();
+  const { handleOpenToast } = useToast();
   const { wallet } = useMetamaskContext();
-
   const { cancelReservation, contract, fees } = useAerolineasContext();
   const { feeCancellation } = fees;
 
-  const [expanded, setExpanded] = useState(false);
-  const [isWaitingEvent, setIsWaitingEvent] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isWaitingSuccessEvent, setIsWaitingSuccessEvent] = useState(false);
   const [isTransactionSuccess, setIsTransactionSuccess] = useState(false);
 
-  const { handleOpenToast } = useToast();
-
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setIsAccordionExpanded(isExpanded ? panel : false);
   };
 
   const handleErrorCancelReservation = (error) => {
-    setIsWaitingEvent(false);
+    setIsWaitingSuccessEvent(false);
     handleOpenToast("error", error?.shortMessage);
   };
 
   const handleCancelReservation = async () => {
-    setIsWaitingEvent(true);
+    setIsWaitingSuccessEvent(true);
     await cancelReservation(reservationId, handleErrorCancelReservation);
   };
 
@@ -52,7 +50,7 @@ const CancelReservationModal = ({ modal, props }) => {
       getAddress(addressEvent) === getAddress(wallet.address) ||
       reservationIdEvent === reservationId
     ) {
-      setIsWaitingEvent(false);
+      setIsWaitingSuccessEvent(false);
       setIsTransactionSuccess(true);
     }
   };
@@ -91,7 +89,7 @@ const CancelReservationModal = ({ modal, props }) => {
       </div>
 
       <Accordion
-        expanded={expanded === "panel1"}
+        expanded={isAccordionExpanded === "panel1"}
         onChange={handleChangeAccordion("panel1")}
         className={classes.accordionMoreInfo}
       >
@@ -120,7 +118,7 @@ const CancelReservationModal = ({ modal, props }) => {
 
   const ModalAction = (
     <div className={classes.actionContainer}>
-      {isWaitingEvent ? (
+      {isWaitingSuccessEvent ? (
         <CircularProgress />
       ) : isTransactionSuccess ? (
         <>

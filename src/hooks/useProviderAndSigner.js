@@ -8,7 +8,7 @@ const useProviderAndSigner = () => {
   const [signer, setSigner] = useState(null);
 
   const {
-    wallet: { address },
+    wallet: { address, chainId },
   } = useMetamask();
 
   const getProviderAndSigner = async (ethereum) => {
@@ -23,7 +23,7 @@ const useProviderAndSigner = () => {
     const { ethereum } = window;
     if (!ethereum) return;
     getProviderAndSigner(ethereum);
-  }, [address]);
+  }, [address, chainId]);
 
   return { provider, signer };
 };
