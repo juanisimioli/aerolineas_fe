@@ -13,6 +13,7 @@ import { Info, ExpandMore } from "@mui/icons-material";
 import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
+import { useToast } from "@/hooks/useToast";
 import { useStyles } from "./styles";
 
 const FreeTransferModal = ({ modal, props }) => {
@@ -22,6 +23,8 @@ const FreeTransferModal = ({ modal, props }) => {
   const seatInfo = calculateSeat(row, column);
 
   const { freeTransferReservation, contract } = useAerolineasContext();
+
+  const { handleOpenToast } = useToast();
 
   const [expanded, setExpanded] = useState(false);
   const [isWaitingEvent, setIsWaitingEvent] = useState(false);
@@ -33,6 +36,15 @@ const FreeTransferModal = ({ modal, props }) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const handleErrorFreeTransferReservation = (error) => {
+    setIsWaitingEvent(false);
+    console.log({ error });
+    handleOpenToast(
+      "error",
+      error?.info?.error?.data?.data?.message || "Error processing transaction"
+    );
+  };
+
   const handleValueAddress = ({ target }) => {
     const { value } = target;
     setValueAddress(value);
@@ -41,7 +53,11 @@ const FreeTransferModal = ({ modal, props }) => {
 
   const handleFreeTransfer = async () => {
     setIsWaitingEvent(true);
-    await freeTransferReservation(reservationId, valueAddress);
+    await freeTransferReservation(
+      reservationId,
+      valueAddress,
+      handleErrorFreeTransferReservation
+    );
   };
 
   const handleReservationTransferredEvent = (

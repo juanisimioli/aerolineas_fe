@@ -1,7 +1,7 @@
 "use client";
 import { ethers, getAddress } from "ethers";
 import { useEffect, useState } from "react";
-import { AerolineasContractAddress } from "../../config.js";
+import { aerolineasContractAddress } from "../../config.js";
 import Aerolineas from "../../../aerolineas_be/artifacts/contracts/Aerolineas.sol/Aerolineas.json";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import { useToast } from "./useToast";
@@ -188,7 +188,11 @@ const useAerolineas = () => {
     }
   };
 
-  const freeTransferReservation = async (_reservationId, _addressReceiver) => {
+  const freeTransferReservation = async (
+    _reservationId,
+    _addressReceiver,
+    onError
+  ) => {
     try {
       const reservationTransferred = await contract.freeTransferReservation(
         _reservationId,
@@ -197,7 +201,7 @@ const useAerolineas = () => {
       reservationTransferred.wait();
       handleOpenToast("success", "Reservation transferred");
     } catch (e) {
-      console.log(e);
+      onError(e);
     }
   };
 
@@ -238,7 +242,7 @@ const useAerolineas = () => {
   useEffect(() => {
     if (!signer) return;
     const AerolineasContract = new ethers.Contract(
-      AerolineasContractAddress,
+      aerolineasContractAddress[chainId],
       Aerolineas.abi,
       signer
     );
@@ -323,6 +327,10 @@ const useAerolineas = () => {
     getInfoForAvailableFlights();
   };
 
+  const xxx = (a, b, c, d, e, f) => {
+    console.log("me", a, b, c, d, e, f);
+  };
+
   // when contract is ready, subscribe to blockchain events
   useEffect(() => {
     if (!contract) return;
@@ -331,6 +339,8 @@ const useAerolineas = () => {
     contract.on("ReservationTransferred", handleReservationTransferredEvent);
     contract.on("ReservationOnResale", handleReservationOnResaleEvent);
     contract.on("UndoReservationOnResale", handleUndoReservationOnResaleEvent);
+
+    contract.on("Transfer", xxx);
 
     return () => {
       contract.off("ReservationMade", handleReservationMadeEvent);
@@ -341,6 +351,7 @@ const useAerolineas = () => {
         "UndoReservationOnResale",
         handleUndoReservationOnResaleEvent
       );
+      contract.off("Transfer", xxx);
     };
   }, [contract]);
 

@@ -3,10 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers } from "ethers";
 
-const allowedNetworkIds = {
-  goerli: 5,
-  local: 1337,
-};
+import { allowedNetworkIds } from "../../config";
 
 const disconnectedState = {
   address: "",
