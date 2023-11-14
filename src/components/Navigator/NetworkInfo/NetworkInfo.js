@@ -16,19 +16,23 @@ const NetworkInfo = () => {
 
   return (
     <div className={classes.container}>
-      {isAllowedChainId ? (
-        <Link className={classes.success} />
-      ) : (
-        <>
-          <p className={classes.error}>Use Sepolia network</p>
-          <LinkOff className={classes.error} />
-        </>
-      )}
+      {isMetamask && address ? (
+        isAllowedChainId ? (
+          <Link className={classes.success} />
+        ) : (
+          <>
+            <p className={classes.error}>Use Sepolia network</p>
+            <LinkOff className={classes.error} />
+          </>
+        )
+      ) : null}
 
       {isMetamask && address ? (
-        isAllowedChainId && <p>{shortAddress(address)}</p>
+        isAllowedChainId && (
+          <p className={classes.address}>{shortAddress(address)}</p>
+        )
       ) : (
-        <Button variant="contained" onClick={connectMetaMask}>
+        <Button className={classes.connectButton} onClick={connectMetaMask}>
           Connect Wallet
         </Button>
       )}

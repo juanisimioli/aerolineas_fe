@@ -3,7 +3,7 @@ import { makeStyles } from "tss-react/mui";
 const useStyles = makeStyles()((theme) => ({
   container: {
     height: "4rem",
-    backgroundColor: "white",
+    backgroundColor: "#4678B4",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

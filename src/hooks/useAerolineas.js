@@ -12,7 +12,7 @@ import { useMetamaskContext } from "@/contexts/useMetamaskContext/index.js";
 const useAerolineas = () => {
   const { signer } = useProviderAndSigner();
   const {
-    wallet: { address, chainId },
+    wallet: { address, chainId, isAllowedChainId },
   } = useMetamaskContext();
   const { handleOpenToast } = useToast();
 
@@ -240,7 +240,7 @@ const useAerolineas = () => {
   ////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////
   useEffect(() => {
-    if (!signer || !address) return;
+    if (!signer || !address || !isAllowedChainId) return;
 
     const AerolineasContract = new ethers.Contract(
       aerolineasContractAddress[chainId],
