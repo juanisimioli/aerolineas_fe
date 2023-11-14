@@ -15,6 +15,7 @@ const useStyles = makeStyles()((theme) => ({
   error: {
     color: "#ff7270",
     fontWeight: 700,
+    textAlign: "center",
   },
 
   success: {

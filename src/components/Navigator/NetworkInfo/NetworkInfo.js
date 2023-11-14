@@ -21,8 +21,8 @@ const NetworkInfo = () => {
           <Link className={classes.success} />
         ) : (
           <>
-            <p className={classes.error}>Use Sepolia network</p>
             <LinkOff className={classes.error} />
+            <p className={classes.error}>Use Sepolia</p>
           </>
         )
       ) : null}

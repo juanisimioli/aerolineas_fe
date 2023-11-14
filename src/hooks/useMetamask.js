@@ -95,6 +95,10 @@ const useMetamask = () => {
     };
   }, [updateWallet, updateWalletAndAccounts]);
 
+  useEffect(() => {
+    if (!hasProvider) setIsConnecting(false);
+  }, [hasProvider]);
+
   const connectMetaMask = async () => {
     setIsConnecting(true);
 

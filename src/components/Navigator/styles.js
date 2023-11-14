@@ -9,6 +9,7 @@ const useStyles = makeStyles()((theme) => ({
     alignItems: "center",
     padding: "1rem 2rem",
     justifyContent: "space-between",
+    gap: 24,
 
     position: "fixed",
     width: "100%",
