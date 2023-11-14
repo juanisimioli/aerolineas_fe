@@ -2,7 +2,7 @@
 import { ethers, getAddress } from "ethers";
 import { useEffect, useState } from "react";
 import { aerolineasContractAddress } from "../../config.js";
-import Aerolineas from "../../../aerolineas_be/artifacts/contracts/Aerolineas.sol/Aerolineas.json";
+import Aerolineas from "../../contract/Aerolineas.json";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import { useToast } from "./useToast";
 
