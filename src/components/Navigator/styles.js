@@ -1,19 +1,17 @@
 import { makeStyles } from "tss-react/mui";
 
 const useStyles = makeStyles()((theme) => ({
-  container: {
-    height: "4rem",
-    backgroundColor: "#4678B4",
+  infoContent: {
     display: "flex",
-    flexDirection: "row",
     alignItems: "center",
-    padding: "1rem 2rem",
-    justifyContent: "space-between",
-    gap: 24,
+    justifyContent: "center",
+    height: "100vh",
+  },
 
-    position: "fixed",
-    width: "100%",
-    zIndex: "100",
+  error: {
+    color: "#ff7270",
+    fontWeight: 700,
+    textAlign: "center",
   },
 
   content: {

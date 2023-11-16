@@ -23,6 +23,7 @@ const SeatMap = () => {
   const organizedSeats = organizeSeats(currentSeats, contiguousRows);
 
   if (isLoadingSeats) return <Skeleton className={classes.skeleton} />;
+  if (!Boolean(currentFlight)) return null;
 
   const noMoreSeats = Number(currentFlight?.seatsLeft) == 0;
 

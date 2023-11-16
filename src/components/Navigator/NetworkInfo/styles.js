@@ -21,14 +21,6 @@ const useStyles = makeStyles()((theme) => ({
   success: {
     color: "#44ce7e",
   },
-
-  connectButton: {
-    fontWeight: 700,
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "#eff3f6",
-    },
-  },
 }));
 
 export { useStyles };

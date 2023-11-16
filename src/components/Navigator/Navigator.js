@@ -1,38 +1,53 @@
 "use client";
-import InstallMetamask from "@/components/Navigator/InstallMetamask/InstallMetamask";
-import NetworkInfo from "./NetworkInfo/NetworkInfo";
+import { Button } from "@mui/material";
 import NavTabs from "./NavTabs/NavTabs";
-import AerolineasLogo from "../AerolineasLogo/AerolineasLogo";
+
 import { useStyles } from "./styles";
-import { Skeleton } from "@mui/material";
+
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";
+import InstallMetamask from "./InstallMetamask/InstallMetamask";
 
 const Navigator = ({ children }) => {
   const { classes } = useStyles();
-  const { isMetamask, isConnecting, isAllowedChainId, wallet } =
-    useMetamaskContext();
+  const {
+    isMetamask,
+    isConnecting,
+    isAllowedChainId,
+    wallet: { address },
+    connectMetaMask,
+  } = useMetamaskContext();
 
   const isValidUsedOnMetamask =
-    isMetamask && isAllowedChainId && Boolean(wallet?.address);
+    isMetamask && isAllowedChainId && Boolean(address);
 
   return (
     <>
-      {/* TODO: can be a <Header /> component */}
-      <header className={classes.container}>
-        <AerolineasLogo />
-        {isConnecting ? (
-          <Skeleton width={250} height={40} />
-        ) : isMetamask ? (
-          <NetworkInfo />
-        ) : (
-          <InstallMetamask />
-        )}
-      </header>
-
-      {isValidUsedOnMetamask && (
+      {isValidUsedOnMetamask ? (
         <div className={classes.content}>
           <NavTabs />
           {children}
+        </div>
+      ) : (
+        <div className={classes.infoContent}>
+          {!isConnecting ? (
+            isMetamask ? (
+              address ? (
+                !isAllowedChainId && (
+                  <p className={classes.error}>Connect to Sepolia Testnet</p>
+                )
+              ) : (
+                <Button
+                  className={classes.connectButton}
+                  onClick={connectMetaMask}
+                  variant="contained"
+                >
+                  Connect Wallet
+                </Button>
+              )
+            ) : (
+              <InstallMetamask />
+            )
+          ) : null}
         </div>
       )}
     </>

@@ -6,6 +6,7 @@ import { MetamaskContextProvider } from "@/contexts/useMetamaskContext";
 import Navigator from "@/components/Navigator/Navigator";
 import ToastProvider from "@/hooks/useToast";
 import Toast from "@/components/Toast/Toast";
+import Header from "@/components/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
           <MetamaskContextProvider>
             <AerolineasContextProvider>
               <body className={inter.className}>
+                <Header />
                 <Navigator>{children}</Navigator>
                 <Toast />
               </body>

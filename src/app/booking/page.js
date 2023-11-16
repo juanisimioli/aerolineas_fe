@@ -11,10 +11,13 @@ import { useEffect } from "react";
 const Booking = () => {
   const { classes } = useStyles();
   const router = useRouter();
-  const { currentSeats } = useAerolineasContext();
+  const { currentSeats, currentFlight } = useAerolineasContext();
 
   useEffect(() => {
-    if (!currentSeats?.length) router.push("/flights");
+    if (!currentSeats?.length || !Boolean(currentFlight)) {
+      console.log("PUSH");
+      router.push("/flights");
+    }
   }, []);
 
   return (

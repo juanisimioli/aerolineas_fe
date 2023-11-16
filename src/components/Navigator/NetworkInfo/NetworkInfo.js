@@ -1,40 +1,30 @@
-import { Button } from "@mui/material";
 import { shortAddress } from "@/components/Utils/airportUtils";
 import { useStyles } from "./styles";
 import { Link, LinkOff } from "@mui/icons-material";
-
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";
+import { Skeleton } from "@mui/material";
 
 const NetworkInfo = () => {
   const { classes } = useStyles();
   const {
-    isMetamask,
     isAllowedChainId,
+    isConnecting,
     wallet: { address },
-    connectMetaMask,
   } = useMetamaskContext();
 
-  return (
+  return isConnecting ? (
+    <Skeleton width={250} height={40} />
+  ) : (
     <div className={classes.container}>
-      {isMetamask && address ? (
-        isAllowedChainId ? (
-          <Link className={classes.success} />
-        ) : (
+      {isAllowedChainId ? (
+        address && (
           <>
-            <LinkOff className={classes.error} />
-            <p className={classes.error}>Use Sepolia</p>
+            <Link className={classes.success} />
+            <p className={classes.address}>{shortAddress(address)}</p>
           </>
         )
-      ) : null}
-
-      {isMetamask && address ? (
-        isAllowedChainId && (
-          <p className={classes.address}>{shortAddress(address)}</p>
-        )
       ) : (
-        <Button className={classes.connectButton} onClick={connectMetaMask}>
-          Connect Wallet
-        </Button>
+        <LinkOff className={classes.error} />
       )}
     </div>
   );
