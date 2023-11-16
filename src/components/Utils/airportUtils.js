@@ -58,8 +58,12 @@ const month = [
   "December",
 ];
 
+const epochToJsDate = (ts) => {
+  return new Date(Number(ts) * 1000);
+};
+
 const dateTimeInfo = (epoch, splitDateAndTime) => {
-  const d = new Date(Number(epoch));
+  const d = epochToJsDate(epoch);
   const date = `${d.getDate()} ${month[d.getMonth()]} ${d.getFullYear()}`;
   const time = `${time2CharLong(d.getHours())}:${time2CharLong(
     d.getMinutes()
@@ -91,4 +95,5 @@ export {
   dateTimeInfo,
   calculateSeat,
   shortAddress,
+  epochToJsDate,
 };

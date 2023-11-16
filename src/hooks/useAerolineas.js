@@ -12,7 +12,8 @@ import { useMetamaskContext } from "@/contexts/useMetamaskContext/index.js";
 const useAerolineas = () => {
   const { signer } = useProviderAndSigner();
   const {
-    wallet: { address, chainId, isAllowedChainId },
+    wallet: { address, chainId },
+    isAllowedChainId,
   } = useMetamaskContext();
   const { handleOpenToast } = useToast();
 
