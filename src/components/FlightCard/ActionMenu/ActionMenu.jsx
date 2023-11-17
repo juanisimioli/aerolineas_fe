@@ -52,8 +52,8 @@ export default function PositionedMenu({ reservation }) {
   return (
     <div>
       <Button
-        id="demo-positioned-button"
-        aria-controls={open ? "demo-positioned-menu" : undefined}
+        id="actions-button"
+        aria-controls={open ? "actions-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
@@ -61,8 +61,8 @@ export default function PositionedMenu({ reservation }) {
         Actions
       </Button>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
+        id="actions-menu"
+        aria-labelledby="actions-button"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}

@@ -1,14 +1,19 @@
 import "./globals.css";
 import ThemeRegistry from "@/styles/ThemeRegistry";
-import { Inter } from "next/font/google";
-import { AerolineasContextProvider } from "@/contexts/AerolineasContext";
-import { MetamaskContextProvider } from "@/contexts/useMetamaskContext";
-import Navigator from "@/components/Navigator/Navigator";
-import ToastProvider from "@/hooks/useToast";
-import Toast from "@/components/Toast/Toast";
+import { Roboto } from "next/font/google";
 import Header from "@/components/Header/Header";
+import Content from "@/components/Content/Content";
+import Toast from "@/components/Toast/Toast";
+import { AerolineasContextProvider } from "@/contexts/useAerolineasContext";
+import { MetamaskContextProvider } from "@/contexts/useMetamaskContext";
+import ToastProvider from "@/hooks/useToast";
 
-const inter = Inter({ subsets: ["latin"] });
+export const roboto = Roboto({
+  weight: ["300", "400", "500", "700"],
+  style: ["normal"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata = {
   title: "Aerolineas",
@@ -22,9 +27,9 @@ export default function RootLayout({ children }) {
         <ToastProvider>
           <MetamaskContextProvider>
             <AerolineasContextProvider>
-              <body className={inter.className}>
+              <body className={roboto.className}>
                 <Header />
-                <Navigator>{children}</Navigator>
+                <Content>{children}</Content>
                 <Toast />
               </body>
             </AerolineasContextProvider>

@@ -7,8 +7,8 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: "column",
     width: "100%",
     height: "auto",
-    padding: "1rem",
-    paddingBottom: "15rem",
+    padding: 16,
+    paddingBottom: 240,
   },
 }));
 

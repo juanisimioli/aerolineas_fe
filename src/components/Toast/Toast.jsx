@@ -5,10 +5,12 @@ import { useToast } from "@/hooks/useToast";
 const Toast = () => {
   const { open, variant, message, handleCloseToast } = useToast();
 
+  const autoHideDuration = 10000;
+
   return (
     <Snackbar
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      autoHideDuration={10000}
+      autoHideDuration={autoHideDuration}
       data-testid="feedback-toast"
       onClose={handleCloseToast}
       open={open}

@@ -1,29 +1,31 @@
 "use client";
-import { useAerolineasContext } from "@/contexts/AerolineasContext";
-
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import SeatMap from "@/components/SeatMap/SeatMap";
 import BookingInformation from "@/components/BookingInformation/BookingInformation";
-import { useRouter } from "next/navigation";
-
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
 import { useStyles } from "./styles";
-import { useEffect } from "react";
 
 const Booking = () => {
   const { classes } = useStyles();
   const router = useRouter();
-  const { currentSeats, currentFlight } = useAerolineasContext();
+  const { currentSeats, currentFlight, isLoadingSeats } =
+    useAerolineasContext();
 
   useEffect(() => {
-    if (!currentSeats?.length || !Boolean(currentFlight)) {
-      console.log("PUSH");
-      router.push("/flights");
+    if (!isLoadingSeats && (!currentSeats?.length || !Boolean(currentFlight))) {
+      router.push("/");
     }
   }, []);
 
   return (
     <div className={classes.container}>
-      <SeatMap />
-      <BookingInformation />
+      {Boolean(currentFlight) && (
+        <>
+          <SeatMap />
+          <BookingInformation />
+        </>
+      )}
     </div>
   );
 };

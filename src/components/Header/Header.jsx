@@ -1,6 +1,6 @@
 "use client";
 import AerolineasLogo from "../AerolineasLogo/AerolineasLogo";
-import NetworkInfo from "../Navigator/NetworkInfo/NetworkInfo";
+import NetworkInfo from "../Content/NetworkInfo/NetworkInfo";
 import { useStyles } from "./styles";
 
 const Header = () => {

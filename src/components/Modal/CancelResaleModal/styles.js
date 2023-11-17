@@ -4,37 +4,42 @@ const useStyles = makeStyles()((theme) => ({
   contentContainer: {
     maxWidth: 520,
   },
+
   flightInfo: {
     display: "flex",
     justifyContent: "center",
-    minHeight: "3.5rem",
+    minHeight: 56,
     backgroundColor: theme.palette.background.main,
     borderRadius: 8,
-    marginBottom: "1rem",
+    marginBottom: 16,
     flexWrap: "wrap",
   },
+
   mainInfo: {
-    margin: "1rem",
+    margin: 16,
     textAlign: "center",
     color: theme.palette.text.black,
     fontWeight: 500,
     fontSize: 20,
   },
+
   accordionMoreInfo: {
     margin: 0,
     boxShadow: "none",
     ":before": {
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.palette.background.white,
     },
     backgroundColor: theme.palette.background.main,
     borderRadius: 8,
   },
+
   moreInfo: {
     display: "flex",
-    gap: "0.6rem",
+    gap: 10,
     alignItems: "center",
     color: theme.palette.text.grey,
   },
+
   legals: {
     color: theme.palette.text.grey,
     fontWeight: 500,
@@ -44,8 +49,9 @@ const useStyles = makeStyles()((theme) => ({
       fontSize: 15,
     },
   },
+
   success: {
-    color: "green",
+    color: theme.palette.status.green,
   },
 
   actionContainer: {
@@ -53,8 +59,8 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    gap: "1.2rem",
-    marginBottom: "1rem",
+    gap: 20,
+    marginBottom: 16,
   },
 }));
 

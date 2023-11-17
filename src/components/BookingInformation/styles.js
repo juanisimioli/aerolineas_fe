@@ -11,7 +11,7 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     position: "fixed",
     bottom: 0,
-    backgroundColor: " #efeff2",
+    backgroundColor: theme.palette.background.grey,
     transform: "rotate(180deg)",
     boxShadow: "0 0 4px 2px rgba(0, 0, 0, 0.2)",
 
@@ -29,8 +29,14 @@ const useStyles = makeStyles()((theme) => ({
     },
 
     "& .MuiAccordionSummary-expandIconWrapper": {
-      color: "#39a0f3",
+      color: theme.palette.map.available,
     },
+  },
+
+  content: {
+    display: "flex",
+    justifyContent: "center",
+    transform: "rotate(180deg)",
   },
 }));
 

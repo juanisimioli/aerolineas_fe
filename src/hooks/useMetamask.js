@@ -121,7 +121,7 @@ const useMetamask = () => {
     errorMessage,
     isAllowedChainId,
     isConnecting,
-    isMetamask: true,
+    isMetamask: hasProvider,
     wallet,
   };
 };

@@ -1,8 +1,8 @@
 "use client";
-import { useAerolineasContext } from "@/contexts/AerolineasContext";
 import FlightCard from "@/components/FlightCard/FlightCard";
-import { useStyles } from "./styles";
 import { Skeleton } from "@mui/material";
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
+import { useStyles } from "./styles";
 
 const Reservations = () => {
   const { reservationsInfoByAddress, isLoadingReservations } =

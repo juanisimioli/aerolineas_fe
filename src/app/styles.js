@@ -9,6 +9,7 @@ const useStyles = makeStyles()((theme) => ({
     padding: "40px 10px",
     gap: "1rem",
   },
+
   skeleton: {
     transform: "none",
     maxWidth: 600,

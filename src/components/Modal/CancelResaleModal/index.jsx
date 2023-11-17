@@ -8,7 +8,7 @@ import {
   AccordionSummary,
 } from "@mui/material";
 import { Info, ExpandMore } from "@mui/icons-material";
-import { useAerolineasContext } from "@/contexts/AerolineasContext";
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import CustomModal from "@/components/CustomModal/CustomModal";
 import { useToast } from "@/hooks/useToast";

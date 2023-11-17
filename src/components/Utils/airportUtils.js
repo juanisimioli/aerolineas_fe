@@ -63,7 +63,7 @@ const epochToJsDate = (ts) => {
 };
 
 const dateTimeInfo = (epoch, splitDateAndTime) => {
-  const d = epochToJsDate(epoch);
+  const d = epochToJsDate(parseInt(epoch));
   const date = `${d.getDate()} ${month[d.getMonth()]} ${d.getFullYear()}`;
   const time = `${time2CharLong(d.getHours())}:${time2CharLong(
     d.getMinutes()

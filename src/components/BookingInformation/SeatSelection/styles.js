@@ -6,7 +6,7 @@ const useStyles = makeStyles()((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     bottom: 0,
-    backgroundColor: "#efeff2",
+    backgroundColor: theme.palette.background.grey,
     padding: "0 1.5rem 0 0.5rem",
     transform: "rotate(180deg)",
     width: "100%",
@@ -16,12 +16,12 @@ const useStyles = makeStyles()((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "end",
-    gap: "1.2rem",
+    gap: 20,
     width: "100%",
   },
 
   airplaneFab: {
-    backgroundColor: "#2f3143",
+    backgroundColor: theme.palette.background.purple,
 
     "&.MuiButtonBase-root": {
       minHeight: 20,
@@ -41,11 +41,12 @@ const useStyles = makeStyles()((theme) => ({
     fontSize: 17,
     fontWeight: 800,
     minWidth: 60,
-    backgroundColor: "#ffd43c",
+    backgroundColor: theme.palette.map.checked,
   },
+
   chipNoFunds: {
-    backgroundColor: "#D0342C",
-    color: "white",
+    backgroundColor: theme.palette.status.darkRed,
+    color: theme.palette.background.white,
   },
 }));
 

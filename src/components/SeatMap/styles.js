@@ -1,10 +1,6 @@
 import { makeStyles } from "tss-react/mui";
 
 const useStyles = makeStyles()((theme) => ({
-  plane: {
-    display: "flex",
-    justifyContent: "center",
-  },
   planeSection: {
     backgroundColor: theme.palette.map.background,
     padding: 20,
@@ -38,7 +34,7 @@ const useStyles = makeStyles()((theme) => ({
   soldOut: {
     marginBottom: 6,
     display: "flex",
-    color: "#FF4545",
+    color: theme.palette.status.red,
     gap: 4,
   },
 }));

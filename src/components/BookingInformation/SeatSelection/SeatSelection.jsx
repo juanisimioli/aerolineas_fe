@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAerolineasContext } from "@/contexts/AerolineasContext";
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
 import { calculateSeat } from "@/components/Utils/airportUtils";
 import { ethers } from "ethers";
 import { Button, Chip, CircularProgress } from "@mui/material";
@@ -62,22 +62,29 @@ const SeatSelection = () => {
     };
   }, [contract]);
 
+  const FlightInfo = () => (
+    <div>
+      <Tooltip title="Flight Info" placement="top">
+        <Fab
+          className={classes.airplaneFab}
+          color="primary"
+          aria-label="Flight Info"
+        >
+          <Flight />
+        </Fab>
+      </Tooltip>
+    </div>
+  );
+
+  const OwnedSeat = () => (
+    <p>{`You own seat ${seatAlreadySelected.name} on this flight`}</p>
+  );
+
   return (
     <div className={classes.container}>
-      <div>
-        <Tooltip title="Flight Info" placement="top">
-          <Fab
-            className={classes.airplaneFab}
-            color="primary"
-            aria-label="Flight Info"
-          >
-            <Flight />
-          </Fab>
-        </Tooltip>
-      </div>
-      {Boolean(seatAlreadySelected) && (
-        <div>{`You own seat ${seatAlreadySelected.name} on this flight`}</div>
-      )}
+      <FlightInfo />
+      {Boolean(seatAlreadySelected) && <OwnedSeat />}
+
       {seatSelected && !Boolean(seatAlreadySelected) && (
         <div className={classes.seatSelectedInfo}>
           {`Total ${ethers.formatEther(seatSelected?.price)} ETH `}

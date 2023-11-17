@@ -7,13 +7,10 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     minWidth: 350,
     maxWidth: 600,
-
     borderRadius: 8,
-
-    color: "#a6adbb",
+    color: theme.palette.text.light,
     overflow: "hidden",
     boxShadow: "0 2px 4px 0 #63668030",
-
     backgroundColor: "white",
   },
 
@@ -36,13 +33,14 @@ const useStyles = makeStyles()((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     padding: "8px 14px",
-    borderTop: "1px solid #e5e6eb",
+    borderTop: `1px solid ${theme.palette.background.greyLight}`,
+    gap: 8,
   },
 
   date: {
     display: "flex",
     justifyContent: "space-between",
-    color: "#a6adbb",
+    color: theme.palette.text.light,
     fontWeight: 400,
     fontSize: 13,
     marginTop: 8,
@@ -63,7 +61,7 @@ const useStyles = makeStyles()((theme) => ({
   city: {
     display: "flex",
     justifyContent: "space-between",
-    color: "#2a2a2a",
+    color: theme.palette.text.black,
     fontSize: 14,
   },
 
@@ -71,7 +69,7 @@ const useStyles = makeStyles()((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    color: "#2a2a2a",
+    color: theme.palette.text.black,
     fontWeight: 500,
     fontSize: 34,
     marginBottom: 6,
@@ -84,25 +82,28 @@ const useStyles = makeStyles()((theme) => ({
       textAlign: "end",
     },
   },
+
   time: {
     display: "flex",
     justifyContent: "space-between",
-    color: "#606c84",
+    color: theme.palette.text.grey,
     fontSize: 18,
     "> p:nth-of-type(2)": {
       fontSize: 16,
     },
   },
+
   flightAlreadyTaken: {
     marginTop: 6,
     display: "flex",
-    color: "#8fce00",
+    color: theme.palette.status.green,
     gap: 4,
   },
+
   soldOut: {
     marginTop: 6,
     display: "flex",
-    color: "#FF4545",
+    color: theme.palette.status.red,
     gap: 4,
   },
 }));

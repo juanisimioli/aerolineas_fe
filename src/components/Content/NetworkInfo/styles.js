@@ -13,13 +13,13 @@ const useStyles = makeStyles()((theme) => ({
   },
 
   error: {
-    color: "#ff7270",
+    color: theme.palette.network.offline,
     fontWeight: 700,
     textAlign: "center",
   },
 
   success: {
-    color: "#44ce7e",
+    color: theme.palette.network.connected,
   },
 }));
 

@@ -8,9 +8,9 @@ import { Flight, Description } from "@mui/icons-material";
 
 const NavTabs = () => {
   const { classes } = useStyles();
-  const [value, setValue] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [value, setValue] = useState(false);
 
   useEffect(() => {
     const value = pathname === "/booking" ? false : pathname;
@@ -18,8 +18,8 @@ const NavTabs = () => {
   }, [pathname]);
 
   const handleChange = (e, newValue) => {
-    setValue(newValue);
     router.push(newValue);
+    setValue(newValue);
   };
 
   return (
@@ -30,7 +30,7 @@ const NavTabs = () => {
       classes={{ root: classes.container }}
     >
       <Tab
-        value="/flights"
+        value="/"
         icon={
           <Flight
             sx={{

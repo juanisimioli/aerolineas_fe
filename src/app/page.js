@@ -1,14 +1,52 @@
 "use client";
-import styles from "./page.module.css";
-import { Roboto } from "next/font/google";
+import { useRouter } from "next/navigation";
+import FlightCard from "@/components/FlightCard/FlightCard";
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
+import { useStyles } from "./styles";
+import { Skeleton } from "@mui/material";
 
-export const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  style: ["normal"],
-  subsets: ["latin"],
-  display: "swap",
-});
+const Flights = () => {
+  const { classes } = useStyles();
+  const router = useRouter();
+  const {
+    flightsInfo,
+    reservationsInfoByAddress,
+    onSelectFlight,
+    isLoadingFlights,
+  } = useAerolineasContext();
 
-export default function Home() {
-  return <main className={`${styles.main} ${roboto.className}`}></main>;
-}
+  const handleSelectFlight = async (flightId) => {
+    router.push("/booking");
+    await onSelectFlight(flightId);
+  };
+
+  const noFlightsAvailable = !Boolean(flightsInfo?.length);
+
+  if (isLoadingFlights)
+    return (
+      <div className={classes.container}>
+        {Array.from({ length: 4 }, (v, i) => (
+          <Skeleton key={`skeleton_${i}`} className={classes.skeleton} />
+        ))}
+      </div>
+    );
+
+  return (
+    <div className={classes.container}>
+      {noFlightsAvailable ? (
+        <p>No flights available</p>
+      ) : (
+        flightsInfo.map((flight, i) => (
+          <FlightCard
+            flight={flight}
+            onSelectFlight={() => handleSelectFlight(flight.id)}
+            reservationsInfoByAddress={reservationsInfoByAddress}
+            key={`${flight.id}_${i}`}
+          />
+        ))
+      )}
+    </div>
+  );
+};
+
+export default Flights;

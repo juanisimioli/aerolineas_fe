@@ -1,7 +1,7 @@
 import { FlightClass } from "@mui/icons-material";
 import { SeatStatus } from "@/components/Utils/enums";
 import { Tooltip } from "@mui/material";
-import { useAerolineasContext } from "@/contexts/AerolineasContext";
+import { useAerolineasContext } from "@/contexts/useAerolineasContext";
 import { useStyles } from "./styles";
 
 const Seat = ({ seat, seatSelected, onChange }) => {

@@ -111,7 +111,7 @@ const FlightCard = ({
           <div>
             <p>{`Seat ${calculateSeat(row, column)}`}</p>
             <p>{`Price ${ethers.formatEther(price)} ETH`}</p>
-            <p>{`Reserved on ${dateTimeInfo(parseInt(timestamp))}`}</p>
+            <p>{`Reserved on ${dateTimeInfo(timestamp)}`}</p>
             <p>{seatStatus == SeatStatus.Available && "Seat is Available"}</p>
             <p>{seatStatus == SeatStatus.OnResale && "Seat is on RESALE"}</p>
             <p>{seatStatus == SeatStatus.Sold && "Seat is SOLD"}</p>

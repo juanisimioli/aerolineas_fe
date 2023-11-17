@@ -22,7 +22,7 @@ const useStyles = makeStyles()((theme) => ({
     },
 
     "& .Mui-selected": {
-      backgroundColor: "#eff3f6",
+      backgroundColor: theme.palette.background.sky,
     },
   },
 }));

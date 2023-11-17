@@ -9,13 +9,13 @@ const useStyles = makeStyles()((theme) => ({
   },
 
   error: {
-    color: "#ff7270",
+    color: theme.palette.network.offline,
     fontWeight: 700,
     textAlign: "center",
   },
 
   content: {
-    paddingTop: "4rem",
+    paddingTop: 64,
     backgroundColor: theme.palette.background.main,
     minHeight: "100vh",
   },
