@@ -4,13 +4,12 @@ const useStyles = makeStyles()((theme) => ({
   container: {
     position: "fixed",
     width: "100%",
-    bottom: 0,
   },
 
   accordion: {
     width: "100%",
     position: "fixed",
-    bottom: 0,
+    bottom: 32,
     backgroundColor: theme.palette.background.grey,
     transform: "rotate(180deg)",
     boxShadow: "0 0 4px 2px rgba(0, 0, 0, 0.2)",

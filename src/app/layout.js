@@ -2,6 +2,7 @@ import "./globals.css";
 import ThemeRegistry from "@/styles/ThemeRegistry";
 import { Roboto } from "next/font/google";
 import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 import Content from "@/components/Content/Content";
 import Toast from "@/components/Toast/Toast";
 import { AerolineasContextProvider } from "@/contexts/useAerolineasContext";
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
               <body className={roboto.className}>
                 <Header />
                 <Content>{children}</Content>
+                <Footer />
                 <Toast />
               </body>
             </AerolineasContextProvider>

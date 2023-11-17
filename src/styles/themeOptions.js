@@ -3,6 +3,7 @@ const themeOptions = {
     background: {
       main: "#f8f8f8",
       blue: "#4678B4",
+      darkBlue: "#132131",
       purple: "#2f3143",
       grey: "#efeff2",
       white: "#ffffff",

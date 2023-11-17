@@ -10,7 +10,7 @@ const BookingInformation = () => {
   const { currentFlight } = useAerolineasContext();
 
   return (
-    <footer className={classes.container}>
+    <section className={classes.container}>
       <Accordion square classes={{ root: classes.accordion }}>
         <AccordionSummary
           expandIcon={<ExpandMore />}
@@ -25,7 +25,7 @@ const BookingInformation = () => {
           </div>
         </AccordionDetails>
       </Accordion>
-    </footer>
+    </section>
   );
 };
 
