@@ -42,6 +42,26 @@ Initiate the development mode
 npm run dev
 ```
 
+## Connect to Hardhat Network
+
+To integrate the Hardhat network with your front-end application, you need to manually add the network to your MetaMask. Follow these steps:
+
+1. Open MetaMask in your browser.
+
+2. Click on the network dropdown in the top right corner of the MetaMask extension.
+
+3. Select "Custom RPC" from the list.
+
+4. In the "New RPC URL" field, enter the URL for the Hardhat network. This is typically `http://localhost:8545` if you are running Hardhat locally.
+
+5. Optionally, you can provide a name for the network (e.g., "Hardhat Network").
+
+6. In the "Chain ID" field, enter `1337` for the Hardhat network.
+
+7. Click "Save" to add the custom network.
+
+Now, your MetaMask is configured to connect to the Hardhat network, allowing your front-end application to interact seamlessly during development. For more detailed instructions, you can refer to the official MetaMask documentation [here](https://docs.metamask.io/wallet/how-to/get-started-building/run-devnet/).
+
 ## Contact me
 
 I would love to hear from you! Whether you have questions, feedback, or just want to connect, please don't hesitate to reach out via email at [juanisimioli@gmail.com](mailto:juanisimioli@gmail.com) or connect with me on [LinkedIn](https://www.linkedin.com/in/juanisimioli/). Learning together in this community is a wonderful experience, and I'm always open to feedback and collaboration.
