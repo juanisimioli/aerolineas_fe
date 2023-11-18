@@ -12,11 +12,15 @@ const useProviderAndSigner = () => {
   } = useMetamask();
 
   const getProviderAndSigner = async (ethereum) => {
-    const provider = new ethers.BrowserProvider(ethereum);
-    const signer = await provider.getSigner();
+    try {
+      const provider = new ethers.BrowserProvider(ethereum);
+      const signer = address ? await provider.getSigner() : null;
 
-    setProvider(provider);
-    setSigner(signer);
+      setProvider(provider);
+      setSigner(signer);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
