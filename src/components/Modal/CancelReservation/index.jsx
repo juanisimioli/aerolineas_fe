@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Info, ExpandMore } from "@mui/icons-material";
 import { useAerolineasContext } from "@/contexts/useAerolineasContext";
-import { calculateSeat } from "@/components/Utils/airportUtils";
+import { calculateSeat } from "@/components/Utils/utils";
 import CustomModal from "@/components/CustomModal/CustomModal";
 import { useToast } from "@/hooks/useToast";
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";

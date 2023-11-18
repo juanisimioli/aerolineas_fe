@@ -7,7 +7,7 @@ const useStyles = makeStyles()((theme) => ({
     justifyContent: "space-between",
     bottom: 0,
     backgroundColor: theme.palette.background.grey,
-    padding: "0 1.5rem 0 0.5rem",
+    padding: "0 24px 0 8px",
     transform: "rotate(180deg)",
     width: "100%",
   },

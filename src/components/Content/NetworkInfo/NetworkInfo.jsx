@@ -1,4 +1,4 @@
-import { shortAddress } from "@/components/Utils/airportUtils";
+import { shortAddress } from "@/components/Utils/utils";
 import { useStyles } from "./styles";
 import { Link, LinkOff } from "@mui/icons-material";
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";

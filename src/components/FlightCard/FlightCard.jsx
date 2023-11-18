@@ -1,11 +1,7 @@
 import { ethers } from "ethers";
 
 import FlightStepper, { STEP } from "./FlightStepper/FlightStepper";
-import {
-  airportInfo,
-  calculateSeat,
-  dateTimeInfo,
-} from "../Utils/airportUtils";
+import { airportInfo, calculateSeat, dateTimeInfo } from "../Utils/utils";
 import { useStyles } from "./styles";
 import OutboundSharpIcon from "@mui/icons-material/OutboundSharp";
 import { SeatStatus } from "../Utils/enums";

@@ -1,5 +1,5 @@
 import airports from "../Utils/airports.json";
-import { SeatColumn } from "../Utils/enums";
+import { SeatColumn } from "./enums";
 
 const iataToUint24 = (iataCode) => {
   if (iataCode.length !== 3) {
@@ -88,6 +88,23 @@ const shortAddress = (address) => {
   return `${address.slice(0, 6)}...${address.slice(address.length - 4)}`;
 };
 
+const sortByFlightNumber = (flights) => {
+  flights.sort(function (a, b) {
+    const flightNumberA = Number(a.flightNumber);
+    const flightNumberB = Number(b.flightNumber);
+
+    if (flightNumberA < flightNumberB) {
+      return -1;
+    } else if (flightNumberA > flightNumberB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  return flights;
+};
+
 export {
   iataToUint24,
   uint24ToIata,
@@ -96,4 +113,5 @@ export {
   calculateSeat,
   shortAddress,
   epochToJsDate,
+  sortByFlightNumber,
 };

@@ -3,8 +3,9 @@ import { ethers, getAddress } from "ethers";
 import { useEffect, useState } from "react";
 import { aerolineasContractAddress } from "../../config.js";
 import Aerolineas from "../../contract/Aerolineas.json";
-import { calculateSeat } from "@/components/Utils/airportUtils";
+import { calculateSeat } from "@/components/Utils/utils.js";
 import { useToast } from "./useToast";
+import { sortByFlightNumber } from "@/components/Utils/utils.js";
 
 import useProviderAndSigner from "./useProviderAndSigner.js";
 import { useMetamaskContext } from "@/contexts/useMetamaskContext/index.js";
@@ -62,7 +63,7 @@ const useAerolineas = () => {
         availableFlights.map((flightId) => getFlight(flightId))
       );
 
-      setFlightsInfo(flightsInfo);
+      setFlightsInfo(sortByFlightNumber(flightsInfo));
     } catch (e) {
       console.log(e);
     } finally {

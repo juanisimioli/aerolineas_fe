@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAerolineasContext } from "@/contexts/useAerolineasContext";
-import { calculateSeat } from "@/components/Utils/airportUtils";
+import { calculateSeat } from "@/components/Utils/utils";
 import { ethers } from "ethers";
 import { Button, Chip, CircularProgress } from "@mui/material";
 import { useStyles } from "./styles";

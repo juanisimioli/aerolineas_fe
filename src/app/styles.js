@@ -7,7 +7,7 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: "column",
     width: "100%",
     padding: "40px 10px",
-    gap: "1rem",
+    gap: 16,
   },
 
   skeleton: {
