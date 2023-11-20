@@ -87,7 +87,10 @@ const SeatSelection = () => {
 
       {seatSelected && !Boolean(seatAlreadySelected) && (
         <div className={classes.seatSelectedInfo}>
-          {`Total ${ethers.formatEther(seatSelected?.price)} ETH `}
+          <p className={classes.totalAmount}>
+            Total{" "}
+            <span>{`${ethers.formatEther(seatSelected?.price)} ETH`}</span>
+          </p>
           <Chip className={classes.chipSeat} label={seat} />
           {isWaitingEvent ? (
             <CircularProgress />

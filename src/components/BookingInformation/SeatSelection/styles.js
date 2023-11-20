@@ -16,7 +16,7 @@ const useStyles = makeStyles()((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "end",
-    gap: 20,
+    gap: 18,
     width: "100%",
   },
 
@@ -42,6 +42,13 @@ const useStyles = makeStyles()((theme) => ({
     fontWeight: 800,
     minWidth: 60,
     backgroundColor: theme.palette.map.checked,
+  },
+
+  totalAmount: {
+    display: "flex",
+    flexWrap: "wrap",
+    marginLeft: 10,
+    minWidth: 80,
   },
 
   chipNoFunds: {
