@@ -8,6 +8,7 @@ import { Flight } from "@mui/icons-material";
 import { Fab, Tooltip } from "@mui/material";
 import { useToast } from "@/hooks/useToast";
 import { useMetamaskContext } from "@/contexts/useMetamaskContext";
+import usePriceFeed from "@/hooks/usePriceFeed";
 
 const SeatSelection = () => {
   const { classes } = useStyles();
@@ -23,6 +24,10 @@ const SeatSelection = () => {
   const {
     wallet: { balance },
   } = useMetamaskContext();
+
+  const { seatSelectedInUsd, isCalculatingPrice } = usePriceFeed(
+    seatSelected?.price
+  );
 
   const { handleOpenToast } = useToast();
 
@@ -88,8 +93,15 @@ const SeatSelection = () => {
       {seatSelected && !Boolean(seatAlreadySelected) && (
         <div className={classes.seatSelectedInfo}>
           <p className={classes.totalAmount}>
-            Total{" "}
-            <span>{`${ethers.formatEther(seatSelected?.price)} ETH`}</span>
+            {`${ethers.formatEther(seatSelected?.price)} ETH`}
+          </p>
+          <p className={classes.totalAmountUsd}>
+            {isCalculatingPrice ? (
+              <CircularProgress size={14} className={classes.loaderUsd} />
+            ) : (
+              seatSelectedInUsd
+            )}{" "}
+            USD
           </p>
           <Chip className={classes.chipSeat} label={seat} />
           {isWaitingEvent ? (

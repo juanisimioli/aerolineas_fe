@@ -105,6 +105,17 @@ const sortByFlightNumber = (flights) => {
   return flights;
 };
 
+const moveDecimal = (price, decimals) => {
+  if (typeof price !== "number" || typeof decimals !== "number") {
+    throw new Error("Both parameters must be numbers");
+  }
+
+  const divisor = Math.pow(10, decimals);
+  const adjustedPrice = price / divisor;
+
+  return adjustedPrice;
+};
+
 export {
   iataToUint24,
   uint24ToIata,
@@ -114,4 +125,5 @@ export {
   shortAddress,
   epochToJsDate,
   sortByFlightNumber,
+  moveDecimal,
 };

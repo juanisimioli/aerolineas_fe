@@ -7,7 +7,7 @@ const useStyles = makeStyles()((theme) => ({
     justifyContent: "space-between",
     bottom: 0,
     backgroundColor: theme.palette.background.grey,
-    padding: "0 24px 0 8px",
+    padding: "0 8px 0 8px",
     transform: "rotate(180deg)",
     width: "100%",
   },
@@ -16,8 +16,9 @@ const useStyles = makeStyles()((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "end",
-    gap: 18,
+    gap: 12,
     width: "100%",
+    paddingLeft: 12,
   },
 
   airplaneFab: {
@@ -47,8 +48,17 @@ const useStyles = makeStyles()((theme) => ({
   totalAmount: {
     display: "flex",
     flexWrap: "wrap",
-    marginLeft: 10,
-    minWidth: 80,
+    minWidth: 60,
+    fontWeight: 700,
+  },
+
+  totalAmountUsd: {
+    color: "green",
+    fontWeight: 700,
+  },
+
+  loaderUsd: {
+    color: "green",
   },
 
   chipNoFunds: {
