@@ -25,9 +25,8 @@ const SeatSelection = () => {
     wallet: { balance },
   } = useMetamaskContext();
 
-  const { seatSelectedInUsd, isCalculatingPrice } = usePriceFeed(
-    seatSelected?.price
-  );
+  const { seatSelectedInUsd, isCalculatingPrice, isPriceInUsdAvailable } =
+    usePriceFeed(seatSelected?.price);
 
   const { handleOpenToast } = useToast();
 
@@ -95,14 +94,16 @@ const SeatSelection = () => {
           <p className={classes.totalAmount}>
             {`${ethers.formatEther(seatSelected?.price)} ETH`}
           </p>
-          <p className={classes.totalAmountUsd}>
-            {isCalculatingPrice ? (
-              <CircularProgress size={14} className={classes.loaderUsd} />
-            ) : (
-              seatSelectedInUsd
-            )}{" "}
-            USD
-          </p>
+          {isPriceInUsdAvailable && (
+            <p className={classes.totalAmountUsd}>
+              {isCalculatingPrice ? (
+                <CircularProgress size={14} className={classes.loaderUsd} />
+              ) : (
+                seatSelectedInUsd
+              )}{" "}
+              USD
+            </p>
+          )}
           <Chip className={classes.chipSeat} label={seat} />
           {isWaitingEvent ? (
             <CircularProgress />

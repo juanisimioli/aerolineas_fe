@@ -3,15 +3,21 @@ import { ethers } from "ethers";
 import useProviderAndSigner from "./useProviderAndSigner";
 import { aggregatorV3InterfaceABI } from "../../contract/aggregatorV3InterfaceABI";
 import { moveDecimal } from "@/components/Utils/utils";
+import useMetamask from "./useMetamask";
+import { allowedNetworkIds } from "../../config";
 
 // https://docs.chain.link/data-feeds/price-feeds/addresses?network=ethereum&page=1
 const ethUsdSepolia = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 
 const usePriceFeed = (priceSeatSelected) => {
   const [isCalculatingPrice, setIsCalculatingPrice] = useState(null);
+  const [isPriceInUsdAvailable, setIsPriceInUsdAvailable] = useState(null);
   const [seatSelectedInUsd, setSeatSelectedInUsd] = useState();
 
   const { signer } = useProviderAndSigner();
+  const {
+    wallet: { chainId },
+  } = useMetamask();
 
   const priceFeed = new ethers.Contract(
     ethUsdSepolia,
@@ -43,12 +49,15 @@ const usePriceFeed = (priceSeatSelected) => {
   };
 
   useEffect(() => {
-    if (priceSeatSelected) {
-      calculatePriceInUsd();
+    if (chainId === allowedNetworkIds.sepolia) {
+      setIsPriceInUsdAvailable(true);
+      priceSeatSelected && calculatePriceInUsd();
+    } else {
+      setIsPriceInUsdAvailable(false);
     }
-  }, [priceSeatSelected]);
+  }, [priceSeatSelected, chainId]);
 
-  return { seatSelectedInUsd, isCalculatingPrice };
+  return { seatSelectedInUsd, isCalculatingPrice, isPriceInUsdAvailable };
 };
 
 export default usePriceFeed;
