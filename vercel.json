@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/mailServer.js": {
-      "runtime": "vercel-node@2.4.1"
-    }
-  }
-}
